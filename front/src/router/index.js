@@ -8,8 +8,8 @@ import Dashboard from "../views/Dashboard.vue";
 // import CustomerView from "../views/Customers/CustomerView.vue";
 // import Orders from "../views/Orders/Orders.vue";
 // import OrderView from "../views/Orders/OrderView.vue";
-// import RequestPassword from "../views/RequestPassword.vue";
-// import ResetPassword from "../views/ResetPassword.vue";
+import RequestPassword from "../views/RequestPassword.vue";
+import ResetPassword from "../views/ResetPassword.vue";
 // import NotFound from "../views/NotFound.vue";
 // import store from "../store";
 // import Report from "../views/Reports/Report.vue";
@@ -128,6 +128,16 @@ const routes = [
     path: "/login",
     name: "login",
     component: Login,
+  },
+  {
+    path: "/request-password",
+    name: "requestPassword",
+    component: RequestPassword,
+  },
+  {
+    path: "/reset-password/:token",
+    name: "resetPassword",
+    component: ResetPassword,
   },
 ];
 
