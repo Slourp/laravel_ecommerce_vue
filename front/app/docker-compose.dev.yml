@@ -1,0 +1,37 @@
+services:
+  app_vue:
+    container_name: ${PROJECT_NAME}_FRONT
+    hostname: ${PROJECT_NAME}_FRONT
+    build:
+      context: .
+      dockerfile: ./docker/node/Dockerfile
+      target: ${NODE_ENV}
+      args:
+        - NODE_ENV=${NODE_ENV}
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - SERVER_PORT=${SERVER_PORT}
+
+    volumes:
+      - .:/node/app:delegated
+      - /node/app/node_modules
+    env_file:
+      - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.${PROJECT_NAME}_NODE.loadbalancer.server.port=${SERVER_PORT}"
+      - "traefik.http.routers.${PROJECT_NAME}_NODE.rule=Host(`${DOMAIN}.traefik.me`)"
+      - "traefik.http.routers.${PROJECT_NAME}_NODE-tls.tls.domains[0].main=${DOMAIN}.traefik.me"
+      - "traefik.http.routers.${PROJECT_NAME}_NODE-tls.tls.domains[0].sans=${DOMAIN}-*.traefik.me"
+      - "traefik.http.routers.${PROJECT_NAME}_NODE.tls=true"
+
+    networks:
+      - default
+      - project-network
+
+networks:
+  default:
+    name: ${NETWORK_NAME}
+  project-network:
+    name: ${PROJECT_NAME}-NETWORK
+    internal: true
