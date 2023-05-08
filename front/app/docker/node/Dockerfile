@@ -2,29 +2,61 @@
 # ---------------------------------------
 FROM node:16-alpine AS base
 
-# This get shared across later stages
-WORKDIR /node/app
-RUN chown -R node:node /node
-USER node
+WORKDIR /node
 
 # Development stage
 # ---------------------------------------
 FROM base AS development
 
-ARG SERVER_PORT=${SERVER_PORT}
-ENV SERVER_PORT=${NODE_ENV}
-ENV NODE_ENV=${NODE_ENV}
-ENV PATH /app/node_modules/.bin:$PATH
-# EXPOSE $SERVER_PORT 
+ENV SERVER_PORT=3000
+ENV PATH /node/node_modules/.bin:$PATH
+EXPOSE $SERVER_PORT 9229
 
-COPY --chown=node:node package*.json ./
+COPY package*.json ./
 
-RUN \
-    NODE_ENV=development && \
-    yarn install --frozen-lockfile
+RUN NODE_ENV=development && yarn install --frozen-lockfile
 
 WORKDIR /node/app
 
-RUN chmod -R 777 /node/app
+CMD ["yarn", "dev"]
 
-CMD [ "yarn", "dev"]
+# Source stage
+# ---------------------------------------
+FROM base AS source
+
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+WORKDIR /node
+COPY package*.json ./
+
+RUN NODE_ENV=development && yarn install --frozen-lockfile
+
+COPY . .
+
+# Test stage
+# ---------------------------------------
+FROM source AS test
+
+ARG NODE_ENV=development
+ENV NODE_ENV=${NODE_ENV}
+ENV PATH /node/node_modules/.bin:$PATH
+
+COPY --from=development /node/node_modules /node/node_modules
+
+RUN \
+  npm run test && \
+  npm run lint
+
+# Production stage
+# ---------------------------------------
+FROM source AS production
+
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+ENV PATH /node/node_modules/.bin:$PATH
+ENV SERVER_PORT=3000
+
+EXPOSE $SERVER_PORT
+
+CMD [ "node", "./bin/www" ]

@@ -1,23 +1,23 @@
 import axiosClient from "../axios";
 
-export function getCurrentUser({commit}, data) {
+export function getCurrentUser({ commit }, data) {
   return axiosClient.get('/user', data)
-    .then(({data}) => {
+    .then(({ data }) => {
       commit('setUser', data);
       return data;
     })
 }
 
-export function login({commit}, data) {
+export function login({ commit }, data) {
   return axiosClient.post('/login', data)
-    .then(({data}) => {
+    .then(({ data }) => {
       commit('setUser', data.user);
       commit('setToken', data.token)
       return data;
     })
 }
 
-export function logout({commit}) {
+export function logout({ commit }) {
   return axiosClient.post('/logout')
     .then((response) => {
       commit('setToken', null)
@@ -26,14 +26,14 @@ export function logout({commit}) {
     })
 }
 
-export function getCountries({commit}) {
+export function getCountries({ commit }) {
   return axiosClient.get('countries')
-    .then(({data}) => {
+    .then(({ data }) => {
       commit('setCountries', data)
     })
 }
 
-export function getOrders({commit, state}, {url = null, search = '', per_page, sort_field, sort_direction} = {}) {
+export function getOrders({ commit, state }, { url = null, search = '', per_page, sort_field, sort_direction } = {}) {
   commit('setOrders', [true])
   url = url || '/orders'
   const params = {
@@ -53,11 +53,11 @@ export function getOrders({commit, state}, {url = null, search = '', per_page, s
     })
 }
 
-export function getOrder({commit}, id) {
+export function getOrder({ commit }, id) {
   return axiosClient.get(`/orders/${id}`)
 }
 
-export function getProducts({commit, state}, {url = null, search = '', per_page, sort_field, sort_direction} = {}) {
+export function getProducts({ commit, state }, { url = null, search = '', per_page, sort_field, sort_direction } = {}) {
   commit('setProducts', [true])
   url = url || '/products'
   const params = {
@@ -77,11 +77,11 @@ export function getProducts({commit, state}, {url = null, search = '', per_page,
     })
 }
 
-export function getProduct({commit}, id) {
+export function getProduct({ commit }, id) {
   return axiosClient.get(`/products/${id}`)
 }
 
-export function createProduct({commit}, product) {
+export function createProduct({ commit }, product) {
   if (product.image instanceof File) {
     const form = new FormData();
     form.append('title', product.title);
@@ -94,11 +94,11 @@ export function createProduct({commit}, product) {
   return axiosClient.post('/products', product)
 }
 
-export function deleteProduct({commit}, id) {
+export function deleteProduct({ commit }, id) {
   return axiosClient.delete(`/products/${id}`)
 }
 
-export function getUsers({commit, state}, {url = null, search = '', per_page, sort_field, sort_direction} = {}) {
+export function getUsers({ commit, state }, { url = null, search = '', per_page, sort_field, sort_direction } = {}) {
   commit('setUsers', [true])
   url = url || '/users'
   const params = {
@@ -118,15 +118,15 @@ export function getUsers({commit, state}, {url = null, search = '', per_page, so
     })
 }
 
-export function createUser({commit}, user) {
+export function createUser({ commit }, user) {
   return axiosClient.post('/users', user)
 }
 
-export function updateUser({commit}, user) {
+export function updateUser({ commit }, user) {
   return axiosClient.put(`/users/${user.id}`, user)
 }
 
-export function getCustomers({commit, state}, {url = null, search = '', per_page, sort_field, sort_direction} = {}) {
+export function getCustomers({ commit, state }, { url = null, search = '', per_page, sort_field, sort_direction } = {}) {
   commit('setCustomers', [true])
   url = url || '/customers'
   const params = {
@@ -146,23 +146,23 @@ export function getCustomers({commit, state}, {url = null, search = '', per_page
     })
 }
 
-export function getCustomer({commit}, id) {
+export function getCustomer({ commit }, id) {
   return axiosClient.get(`/customers/${id}`)
 }
 
-export function createCustomer({commit}, customer) {
+export function createCustomer({ commit }, customer) {
   return axiosClient.post('/customers', customer)
 }
 
-export function updateCustomer({commit}, customer) {
+export function updateCustomer({ commit }, customer) {
   return axiosClient.put(`/customers/${customer.id}`, customer)
 }
 
-export function deleteCustomer({commit}, customer) {
+export function deleteCustomer({ commit }, customer) {
   return axiosClient.delete(`/customers/${customer.id}`)
 }
 
-export function updateProduct({commit}, product) {
+export function updateProduct({ commit }, product) {
   const id = product.id
   if (product.image instanceof File) {
     const form = new FormData();
